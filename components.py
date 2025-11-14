@@ -23,17 +23,30 @@ def display_app_title():
 
 def display_select_mode():
     """
-    回答モードのラジオボタンを表示
+    回答モードのラジオボタンを表示（サイドバーに表示）
     """
-    # 回答モードを選択する用のラジオボタンを表示
-    col1, col2 = st.columns([100, 1])
-    with col1:
-        # 「label_visibility="collapsed"」とすることで、ラジオボタンを非表示にする
+with st.sidebar:
+        st.markdown("## 利用目的")
+        # 回答モードを選択する用のラジオボタンを表示
         st.session_state.mode = st.radio(
-            label="",
+            label="利用目的",
             options=[ct.ANSWER_MODE_1, ct.ANSWER_MODE_2],
-            label_visibility="collapsed"
+            label_visibility="hidden"
         )
+        
+        # 区切り線
+        st.divider()
+        
+        # 「社内文書検索」の機能説明
+        st.markdown("**【「社内文書検索」を選択した場合】**")
+        st.info("入力内容と関連性が高い社内文書のありかを検索できます。")
+        st.code("【入力例】\n社員の育成方針に関するMTGの議事録", wrap_lines=True, language=None)
+        
+        # 「社内問い合わせ」の機能説明
+        st.markdown("**【「社内問い合わせ」を選択した場合】**")
+        st.info("質問・要望に対して、社内文書の情報をもとに回答を得られます。")
+        st.code("【入力例】\n人事部に所属している従業員情報を一覧化して", wrap_lines=True, language=None)
+
 
 
 def display_initial_ai_message():
@@ -43,7 +56,7 @@ def display_initial_ai_message():
     with st.chat_message("assistant"):
         # 「st.success()」とすると緑枠で表示される
         st.markdown("こんにちは。私は社内文書の情報をもとに回答する生成AIチャットボットです。上記で利用目的を選択し、画面下部のチャット欄からメッセージを送信してください。")
-
+"""
         # 「社内文書検索」の機能説明
         st.markdown("**【「社内文書検索」を選択した場合】**")
         # 「st.info()」を使うと青枠で表示される
@@ -56,7 +69,7 @@ def display_initial_ai_message():
         st.markdown("**【「社内問い合わせ」を選択した場合】**")
         st.info("質問・要望に対して、社内文書の情報をもとに回答を得られます。")
         st.code("【入力例】\n人事部に所属している従業員情報を一覧化して", wrap_lines=True, language=None)
-
+"""
 
 def display_conversation_log():
     """
