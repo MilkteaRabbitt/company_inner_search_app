@@ -219,7 +219,42 @@ def file_load(path, docs_all):
         # ファイルの拡張子に合ったdata loaderを使ってデータ読み込み
         loader = ct.SUPPORTED_EXTENSIONS[file_extension](path)
         docs = loader.load()
-        docs_all.extend(docs)
+        
+        # PDFファイルの場合、ページ番号のメタデータを追加
+        if file_extension == ".pdf":
+            for doc in docs:
+                # doc.metadata['page'] にページ番号が格納されている（0始まり）
+                if "page" in doc.metadata:
+                    page_num = doc.metadata.get('page', 0) + 1
+                    doc.metadata['page_number'] = page_num
+            docs_all.extend(docs)
+        
+        # CSVファイルの場合、複数のドキュメント（各行）を1つのドキュメントに統合
+        elif file_extension == ".csv" and len(docs) > 0:
+            # 統合後のテキストを格納するリスト
+            combined_content = []
+            # メタデータは最初のドキュメントのものを使用
+            combined_metadata = docs[0].metadata.copy()
+            
+            # 各行の内容を改行で区切って統合
+            for doc in docs:
+                # 各行の内容を追加（検索精度向上のため、見出し行も含める）
+                combined_content.append(doc.page_content)
+            
+            # 統合したテキストを作成（改行で区切る）
+            combined_text = "\n".join(combined_content)
+            
+            # 統合したドキュメントを作成
+            from langchain.schema import Document as LangchainDocument
+            combined_doc = LangchainDocument(
+                page_content=combined_text,
+                metadata=combined_metadata
+            )
+            docs_all.append(combined_doc)
+        
+        # その他のファイル形式の場合
+        else:
+            docs_all.extend(docs)
 
 
 def adjust_string(s):
