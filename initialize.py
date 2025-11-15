@@ -27,6 +27,8 @@ import constants as ct
 # 「.env」ファイルで定義した環境変数の読み込み
 load_dotenv()
 
+# Retrieverの検索対象数
+RETRIEVER_TOP_K = ct.RETRIEVER_TOP_K
 
 ############################################################
 # 関数定義
